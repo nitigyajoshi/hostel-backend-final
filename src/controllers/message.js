@@ -1,48 +1,61 @@
 import { asyncHandler } from '../utils/asyncHandler.js';
 import Message from '../models/message.js';
+import { ApiResponse } from '../utils/ApiResponse.js'
 
 
 const message = asyncHandler(async (req, res) => {
-const {sender_id,receiver_id,message,sender_Name}=req.body
+  // sender or reciver id
+const {id}=req.body
  // const hosteldetail=
    
   try {
     console.log('...................................................................')
-    const message = await Message.findOne({
-        sender_id: sender_id,
-        receiver_id: receiver_id });
+    const message = await Message.find({
+      //  sender_id: sender_id,
+       // reciever: reciever || sender:reciever
+       $or: [
+        { sender: id },
+        { reciever: id }
+    ]
+
+      });
 
     if (!message) {
-      return res.status(404).json({ message: 'Hostel detail not found' });
+      return res.status(404).json(new ApiResponse(404, bookings, "Message Not  Found"));
     }
 
-    res.status(200).json(message);
+    res.status(200).json(
+   
+       new ApiResponse(200, message, "Message  Found"
+
+       )
+      );
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json(new ApiResponse(500, null, "Something went wrong"));
   }
 
 
 })
 //add message
 const addMessage = asyncHandler(async (req, res) => {
-    const {sender_id,receiver_id,message,sender_Name}=req.body
+    const {sender_username,reciever_username,message}=req.body
      // const hosteldetail=
        
       try {
         console.log('...................................................................')
-        const message = await Message.insert({
+        const newMessage = await Message.create({
             
-                sender_id: sender_id,
-                receiver_id: receiver_id ,
-                msg:message,
-                sender_Name:sender_Name
+          sender: sender_username,
+          reciever: reciever_username ,
+          message:message,
+               // sender_Name:sender_Name
         });
     
-        if (!message) {
-          return res.status(404).json({ message: 'Hostel detail not found' });
+        if (!newMessage) {
+          return res.status(404).json({ message: 'Something went wrong' });
         }
     
-        res.status(200).json(message);
+        res.status(200).json(newMessage);
       } catch (error) {
         res.status(500).json({ message: error.message });
       }

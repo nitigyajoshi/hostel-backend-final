@@ -30,7 +30,7 @@ const messageSchema = new mongoose.Schema({
   sender: { type: String, required: true },
   reciever: { type: String, required: true },
  message: { type: String, required: true },
-   senderName: { type: String, required: true },
+   senderName: { type: String, required: false },
 //   lat: { type: Number, required: true },
 //   long: { type: Number, required: true },
 //   costPerMonth: { type: String, required: true },

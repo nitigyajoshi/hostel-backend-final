@@ -9,12 +9,19 @@ import {generateEmailTemplate} from '../utils/mailTemplate.js'
 import jwt from 'jsonwebtoken'
 import CustomError from '../utils/ApiError.js';
 import Hostel from '../models/recent_hostel_model.js';
+import Booking from '../models/booking.model.js'
+import mongoose from "mongoose";
+const testEndpoint=asyncHandler(async(req,res)=>{
+        res.send("hello world")
+})
 
 const registerController = asyncHandler(async (req, res) => {
 
         try {
                
-                const { fullName, dob, username, email, phoneNo, password, college, company,jobStatus,collegelongitude, collegelatitude,fieldOfProfession,
+                const { fullName, dob, username, email, phoneNo, password,
+                         college, company,jobStatus,collegelongitude, 
+                         collegelatitude,fieldOfProfession,
                         hostelName,pan_card,
                         kyc_doc,role } = req.body;
                 if (!fullName || !dob || !username || !email || !phoneNo || !password) {
@@ -204,6 +211,85 @@ const getUserDetail = asyncHandler(async (req, res) => {
                 .status(200)
                 .json(new ApiResponse(200, user));
 })
+//
+
+const getUserByUserName = async (req, res) => {
+        const usernames = req.body.usernames; // Accepting a list of usernames
+    
+        if (usernames && Array.isArray(usernames)) {
+            try {
+                const users = await User.find({ username: { $in: usernames } });
+                return res
+                    .status(200)
+                    .json(new ApiResponse(200, users, "Users Found"));
+            } catch (error) {
+                return res
+                    .status(500)
+                    .json(new ApiResponse(500, null, "Internal Server Error"));
+            }
+        }
+    
+        return res
+            .status(400)
+            .json(new ApiResponse(400, null, "Invalid input, expected a list of usernames"));
+    };
+// accept or decline booking request 
+
+const requestAction=asyncHandler(async (req,res)=>{
+const {isAccepted,id}=req.body;
+let objectId;
+
+// if (!mongoose.Types.ObjectId.isValid(id)) {
+//         return res.status(400).json({ message: 'Invalid booking ID' });
+//       }
+objectId = new mongoose.Types.ObjectId(id);
+
+      const filter = { _id: new mongoose.Types.ObjectId(id) };
+      const update = { 
+        status: isAccepted ? 'accepted' : 'rejected', // Update based on isAccepted value
+        updated_at: new Date() // Ensure updated_at field is also updated
+      };
+    
+      try {
+        const doc = await Booking.findOneAndUpdate(filter, update, { new: true });
+        
+        if (!doc) {
+          return res.status(404).json({ message: 'Booking not found' });
+        }
+    
+        return res.json(doc);
+      } catch (error) {
+        return res.status(500).json({ message: 'An error occurred', error: error.message });
+      }
+
+})
+
+
+
+
+
+
+
+// const getUserByUserName = async (req, res) => {
+//         const username=req.body.username;
+//       //  console.log("hello"+u)
+        
+//      //  console.log(req.body)
+//        // const username = req.body.username;
+//         //console.log(req.body)
+
+//         if (username) {
+//                 const user =await User.findOne({username:username});
+//                 return res
+//    //     .status(200).json(user);
+//         .json(new ApiResponse(200, user, "User Found")); 
+
+//         }
+// return res
+//         .status(400)
+//         .json(new ApiResponse(400, "Something went wrong"));      
+// }
+
 
 const updateAccountDetail = asyncHandler(async(req,res)=>{
         const {email, phoneNo, fullName, dob} = req.body;
@@ -613,28 +699,40 @@ const getAddedProperty = asyncHandler(async(req,res)=>{
         } catch (error) {
                 res.status(400).json({ error: err.message });
         }
-       
-        // if(!hostelOwner){
-        //         throw new CustomError(409, "Account not found");
-        // }
-  //      const tokenStatus = await hostelOwnerhostelOwner.isValidToken(token);
-        // if(!tokenStatus)
-        // {
-        //         throw new CustomError(401,"Invalid Token");
-        // }
+       //send notification to user weather accepted or not
 
-        // hostelOwner.otp = 1;
-        // hostelOwner.otpTimestamp = 1;
-        // hostelOwner.token = 1;
-        // hostelOwner.tokenTimestamp = 1;
-        // hostelOwner.verified = true;
-        // await hostelOwner.save();
 
-        // return res
-        // .status(200)
-        // .json(new ApiResponse(200,{message:"Account verified Successfully"}));
+
 
 })
+
+const checkUserNotification=asyncHandler(async (req,res)=>{
+
+        const { username } = req.body;
+
+        try {
+          const bookings = await Booking.find({ username: username, status: 'accepted' });
+      
+          if (!bookings || bookings.length === 0) {    return res
+                .status(400)
+                .json(new ApiResponse(404, null, "No Bookings Found "));
+
+
+            //return res.status(404).json({ message: 'No bookings found for the given username and status' });
+          }
+          return res
+                    .status(200)
+                    .json(new ApiResponse(200, bookings, "Booking  Found"));
+        //  return res.json(bookings);
+        } catch (error) {
+                return res
+                .status(500)
+                .json(new ApiResponse(500, null, "Internal Server Error"));
+        //        return res.status(500).json({ message: 'Error finding bookings', error: error.message });
+        }
+
+})
+
 export {
         registerController, 
         loginController, 
@@ -649,7 +747,8 @@ export {
         verifyOTP,
         verifyToken,
         getResentlyAdded,
-        getSuggested,addProperty,getAddedProperty
+        getSuggested,addProperty,getAddedProperty,
+        testEndpoint,getUserByUserName,requestAction,checkUserNotification
         // propertyDetails
         
 }
