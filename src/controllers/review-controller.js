@@ -31,10 +31,17 @@ console.log(req.body)
 // Controller function to get all reviews for a specific hostel
 //export 
 const getReviewsByHostel = async (req, res) => {
-    const { hostel_id } = req.params;
+    
+    const { hostel_id } = 
+    
+    req.params;
+    console.log(hostel_id)
 
     try {
-        const reviews = await Review.find({ hostel_id }).populate('user_id', 'username');
+
+        const reviews = await Review.find({ hostel_id })
+     //   .populate('user_id', 'user_id');
+        
         res.status(200).json(reviews);
     } catch (error) {
         console.error('Error fetching reviews:', error);

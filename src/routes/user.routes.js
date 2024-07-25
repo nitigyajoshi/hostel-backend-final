@@ -69,7 +69,7 @@ router.route('/hel').post(async (req, res) =>{
 res.send("kk")
 })
 //router.route('tes').get()
-router.route('/getReview').post(getReviewsByHostel); 
+router.route('/getReview/:hostel_id').get(getReviewsByHostel); 
 router.route('/createReview').post(createReview); 
 router.route('/updateReview').post(updateReview); 
 router.route('/getMyAcceptedBooking').post(getMyAcceptedBooking)

@@ -19,12 +19,15 @@ const bookingController = asyncHandler(async(req,res)=>{
     try {
         const { username, _id,  } = req.body;
      console.log(req.body)
+     
      const hostel = await Hostel.findById(_id);
      const hostel_id=_id;
 
      const addedBy=hostel.addedBy;
      console.log(hostel.addedBy)
      const newBooking = new Booking({
+
+
         hostel_id,
         username,
         
@@ -85,14 +88,33 @@ const checkNotification = asyncHandler(async(req,res)=>{
 })
 const getMyAcceptedBooking = asyncHandler(async (req,res)=>{
     const { username } = req.body;
-
+try {
     const acceptBookings = await Booking.find({ username: username, status: 'accepted' });
+    if (acceptBookings.length === 0) {
+        return res.status(404).json({ message: 'No accepted bookings found for this user' });
+    }
 
-    if (!acceptBookings) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      // Extract unique hostel IDs
+      const hostelIds = acceptBookings.map(booking => booking.hostel_id);
+      const uniqueHostelIds = [...new Set(hostelIds)]; // Remove duplicates if any
 
-     res.status(200).json({acceptBookings}) 
+      // Fetch hostel details for these IDs
+      const hostels = await Hostel.find({ _id: { $in: uniqueHostelIds } });
+
+      res.status(200).json({ hostels });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
+
+
+    
+
+    // if (!acceptBookings) {
+    //     return res.status(404).json({ message: 'User not found' });
+    //   }
+
+    //  res.status(200).json({acceptBookings}) 
 
 })
 export {
