@@ -105,7 +105,7 @@ const userSchema = new Schema(
         ,
         role:{
             type:String,
-            enum:["User","Admin","HostelOwner"],
+            enum:["User","Admin","Vendor"],
             default: "User"
         },
         hostel_associated: {
