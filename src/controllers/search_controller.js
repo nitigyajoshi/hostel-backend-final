@@ -27,7 +27,7 @@ const SearchController = asyncHandler(async (req, res) => {
         //     { $text: { $search: squery } },
         //     { score: { $meta: 'textScore' } }
         // ).sort({ score: { $meta: 'textScore' } });
-
+console.log('hos3',results)
         res.json(results);
     } catch (error) {
         console.error('Search error:', error);

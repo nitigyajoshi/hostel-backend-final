@@ -12,7 +12,7 @@ import {  registerController,
     verifyOTP,
     verifyToken,
     uploadCoverPicture,getResentlyAdded,getSuggested,addProperty,getAddedProperty,
-    testEndpoint,getUserByUserName,requestAction,checkUserNotification
+    testEndpoint,getUserByUserName,requestAction,checkUserNotification,getUserByUserNameWithMayBeSameUserName
     //testEndpoint
     //,propertyDetails
  } from '../controllers/user.controller.js';
@@ -73,4 +73,6 @@ router.route('/getReview/:hostel_id').get(getReviewsByHostel);
 router.route('/createReview').post(createReview); 
 router.route('/updateReview').post(updateReview); 
 router.route('/getMyAcceptedBooking').post(getMyAcceptedBooking)
+router.route('/getUserByUserNameWithMayBeSameUserName').post(getUserByUserNameWithMayBeSameUserName)
+
 export default router;
