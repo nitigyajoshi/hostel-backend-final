@@ -9,6 +9,7 @@ import {sendEmail} from '../utils/mail.js'
 import {generateEmailTemplate} from '../utils/mailTemplate.js'
 import jwt from 'jsonwebtoken'
 import HostelOwner from '../models/hostelOwner.model.js';
+import hostelOwnerAnalytics from '../models/hostelOwnerAnalytics.model.js';
 
 const vendorRegister = asyncHandler(async (req, res) => {
 

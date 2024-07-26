@@ -66,15 +66,17 @@ app.use(cookieParser());
 
 // importing Routes
 import userRoutes from './routes/user.routes.js'
+import adminRoutes from './routes/admin.routes.js'
 //import review from '../src/routes/review.js'
 //import vendorRoute from './routes/hostelOwner.routes.js'
  //import {vendorRoute} from './routes/hostelOwner.routes.js'
- import Utils from '../src/routes/util_routes.js'
+ import Utils from './routes/util_routes.js'
 // Setting the routes
 app.use('/v1/users/',userRoutes);
 //app.use('/v1/vendor/',vendorRoute)
 // app.use('/v1/vendor/',vendorRoutes);
 app.use('/v1/utils/',Utils);
+app.use('/v1/admin/',adminRoutes)
 //app.use('/v1/review/',review);
 export { app }
 

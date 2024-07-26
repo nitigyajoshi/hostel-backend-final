@@ -72,7 +72,7 @@ const r='User'
                                     pan_card,
                                     kyc_doc
                                 ,
-                               r
+                               
 
                         })
                

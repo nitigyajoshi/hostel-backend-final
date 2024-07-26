@@ -1,5 +1,5 @@
 import User from '../models/user.model.js'
-import {CustomError} from '../utils/ApiError.js'
+import CustomError from '../utils/ApiError.js'
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken"
 
